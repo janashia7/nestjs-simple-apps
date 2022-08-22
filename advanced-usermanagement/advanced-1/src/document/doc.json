@@ -1,0 +1,316 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "User Management",
+    "description": "This is a user management application",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000"
+    }
+  ],
+  "tags": [
+    {
+      "name": "users",
+      "description": "Operations about users"
+    },
+    {
+      "name": "votes",
+      "description": "Operation about votes"
+    }
+  ],
+  "paths": {
+    "/users/signup": {
+      "post": {
+        "tags": ["users"],
+        "summary": "Create User",
+        "description": "This can only be done by the logged in user.",
+        "operationId": "createUser",
+        "requestBody": {
+          "description": "Created user object",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "default": {
+            "description": "successful operation",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/users/signin": {
+      "post": {
+        "tags": ["users"],
+        "summary": "Login User",
+        "operationId": "signinUser",
+        "requestBody": {
+          "description": "User signin",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserLoginDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "default": {
+            "description": "successful operation",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/users/update/{nickname}": {
+      "put": {
+        "tags": ["users"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Update User",
+        "operationId": "userUpdate",
+        "parameters": [
+          {
+            "name": "nickname",
+            "in": "path",
+            "description": "nickname of user that needs to be updated",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "If-Unmodified-Since",
+            "in": "header",
+            "description": "input updated time",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "User Update",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "default": {
+            "description": "successful operation",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/users/list": {
+      "get": {
+        "tags": ["users"],
+        "summary": "Users List",
+        "operationId": "userList",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "number"
+            },
+            "description": "The number of page"
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "number"
+            },
+            "description": "The number of user limit"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/users/delete/{nickname}": {
+      "delete": {
+        "tags": ["users"],
+        "summary": "Delete User",
+        "operationId": "deleteUser",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "nickname",
+            "in": "path",
+            "description": "nickname of user that needs to be deleted",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/votes": {
+      "post": {
+        "tags": ["votes"],
+        "summary": "Vote and update user vote",
+        "operationId": "voteUser",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Vote user",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VoteDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "default": {
+            "description": "successful operation",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/votes/{nickname}": {
+      "get": {
+        "tags": ["votes"],
+        "summary": "Get total vote of user",
+        "operationId": "TotalVote",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "nickname",
+            "in": "path",
+            "description": "nickname of user that needs to get total votes",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation",
+            "content": {}
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "responses": {
+      "UnauthorizedError": {
+        "description": "Access token is missing or invalid"
+      }
+    },
+    "schemas": {
+      "UserLoginDto": {
+        "type": "object",
+        "properties": {
+          "nickname": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "UserLoginDto"
+        }
+      },
+      "CreateUserDto": {
+        "type": "object",
+        "properties": {
+          "nickname": {
+            "type": "string"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "CreateUserDto"
+        }
+      },
+      "UpdateUserDto": {
+        "type": "object",
+        "properties": {
+          "fullName": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "UpdateUserDto"
+        }
+      },
+      "VoteDto": {
+        "type": "object",
+        "properties": {
+          "votedFor": {
+            "type": "string"
+          },
+          "vote": {
+            "type": "number"
+          }
+        },
+        "xml": {
+          "name": "VoteDto"
+        }
+      }
+    }
+  }
+}

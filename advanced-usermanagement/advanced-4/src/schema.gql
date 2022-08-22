@@ -1,0 +1,51 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type UserEntity {
+  nickname: String!
+  fullName: String!
+  password: String!
+}
+
+type UsersToken {
+  token: String!
+  user: UserEntity!
+}
+
+type UpdateUserMsg {
+  message: String!
+}
+
+type DeleteType {
+  deleted: Int!
+}
+
+type Query {
+  getList(page: Float, limit: Float): [UserEntity!]!
+}
+
+type Mutation {
+  signup(createUsersInput: CreateUsersInput!): UserEntity!
+  signin(loginUserInput: LoginUsersInput!): UsersToken
+  update(nickname: String!, updateUsersInput: UpdateUsersInput!): UpdateUserMsg!
+  delete(nickname: String!): DeleteType!
+}
+
+input CreateUsersInput {
+  nickname: String!
+  fullName: String!
+  password: String!
+  salt: String
+}
+
+input LoginUsersInput {
+  nickname: String!
+  password: String!
+}
+
+input UpdateUsersInput {
+  fullName: String
+  password: String
+  salt: String
+}
